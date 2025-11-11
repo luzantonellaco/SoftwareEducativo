@@ -1,19 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenida</title>
-</head>
-<body>
-    <h1>Bienvenido a JuegoEducativo</h1>
-    <h2>Selecciona tu Perfil</h2>
+    <title>Aventura TCP/IP: Carrera de Capas</title>
     
-    <p>
-        <a href="{% url 'login_profesor' %}">Ingresar como Profesor</a>
+    <link rel="stylesheet" href="{% static 'aplicacion/style.css' %}">
+    
+</head>
+<body> 
+    <h1 class="title">
+        AVENTURA TCP/IP: CARRERA DE CAPAS 🏁
+    </h1>
+    
+    <p class="subtitle">
+        ¿Listo para el desafío?
     </p>
-    <p>
-        <a href="{% url 'login_estudiante' %}">Ingresar como Estudiante</a>
-    </p>
+
+    <div class="button-container">
+        
+        <a href="{% url 'login_profesor' %}" class="btn btn-profesor">
+            Ingresar como profesor
+        </a>
+        
+        <a href="{% url 'login_estudiante' %}" class="btn btn-estudiante">
+            Ingresar como estudiante
+        </a>
+        
+    </div>
     
 </body>
 </html>

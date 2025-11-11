@@ -3,8 +3,16 @@ from .models import Usuario
 from django.contrib.auth.forms import AuthenticationForm # <-- Necesario para los Login Forms
 
 # --- Formulario Base para todos los registros ---
+# Modificación en aplicacion/forms.py
+
+# --- Formulario Base para todos los registros ---
 class BaseRegistroForm(forms.ModelForm):
-    """Define los campos comunes a ambos roles."""
+    """Define los campos comunes a ambos roles y los hace requeridos."""
+    
+    # Redefinimos los campos para forzar la propiedad required=True
+    # (El campo ya está en el modelo Usuario, pero lo definimos aquí para el Formulario)
+    first_name = forms.CharField(max_length=150, label='Nombre')
+    last_name = forms.CharField(max_length=150, label='Apellido')
     
     # Campo extra para confirmar la contraseña
     password_confirm = forms.CharField(
@@ -48,6 +56,13 @@ class EstudianteRegistroForm(BaseRegistroForm):
             'username': 'Correo Electrónico', # Usamos el email como username
             'alias': 'Alias / Nickname',
         }
+        # AÑADIDO: Mensaje de unicidad para el username del estudiante (limpio)
+        error_messages = {
+            'username': {
+                'unique': "Ya existe un usuario registrado con este correo electrónico.",
+            }
+        }
+
 
     def save(self, commit=True):
         # 1. Guarda el usuario
@@ -69,6 +84,12 @@ class ProfesorRegistroForm(BaseRegistroForm):
         labels = {
             **BaseRegistroForm.Meta.labels,
             'correo_institucional': 'Correo Institucional',
+        }
+        # AÑADIDO: Mensaje de unicidad para el correo del profesor (limpio)
+        error_messages = {
+            'correo_institucional': {
+                'unique': "Ya existe un usuario registrado con este correo institucional.",
+            }
         }
 
     def __init__(self, *args, **kwargs):
@@ -108,6 +129,11 @@ class EstudianteLoginForm(AuthenticationForm):
         self.fields['username'].label = 'Correo Electrónico'
         self.fields['password'].label = 'Contraseña'
         
+        # AÑADIDO: Personalizar el mensaje de error de credenciales incorrectas
+        self.error_messages['invalid_login'] = (
+            "El correo o la contraseña son incorrectos. Inténtalo de nuevo."
+        )
+        
         # Opcional: Añadir placeholders
         self.fields['username'].widget.attrs.update(
             {'placeholder': 'tu_correo@ejemplo.com'}
@@ -126,12 +152,15 @@ class ProfesorLoginForm(AuthenticationForm):
         self.fields['username'].label = 'Correo Institucional: '
         self.fields['password'].label = 'Contraseña: '
         
+        # AÑADIDO: Personalizar el mensaje de error de credenciales incorrectas
+        self.error_messages['invalid_login'] = (
+            "El Correo Institucional o la contraseña son incorrectos. Inténtalo de nuevo."
+        )
+        
         # Opcional: Añadir placeholders
         self.fields['username'].widget.attrs.update(
             {'placeholder': 'tu_correo@institucion.edu'}
         )
         self.fields['password'].widget.attrs.update(
-            {'placeholder': 'Tu contraseña'}
+            {'placeholder': 'Tu contraseña'} 
         )
-
-        

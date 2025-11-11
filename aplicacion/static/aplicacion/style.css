@@ -1,0 +1,214 @@
+/* aplicacion/static/aplicacion/style.css */
+
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    /* Fondo con ligero degradado azul/verde en la parte superior (Mismo fondo que index) */
+    background: linear-gradient(180deg, #e0f7fa 0%, #f7fcf7 20%, #f7fcf7 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    text-align: center;
+
+    /* ... código existente ... */
+    min-height: 100vh;
+    margin: 0;
+
+    padding-top: 50px; 
+}
+/* Estilo del título principal (AVENTURA TCP/IP) */
+.title {
+    color: #004d99;
+    font-size: 2.5em;
+    font-weight: 800;
+    /* CAMBIO CLAVE: Quitamos el margen negativo o lo reducimos */
+    margin-top: 0; 
+    /* Damos espacio entre el título y la tarjeta blanca */
+    margin-bottom: 30px; 
+}
+
+/* Estilo del subtítulo (Usado en Home) */
+.subtitle {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 60px; 
+    font-weight: normal;
+}
+
+/* Contenedor de botones (Home) */
+.button-container {
+    display: flex;
+    gap: 40px; 
+}
+
+/* --- ESTILOS DE TARJETA (LOGIN/REGISTRO) --- */
+
+.auth-card {
+    background-color: white;
+    padding: 40px 50px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px; /* Base para Login de una columna */
+    text-align: left;
+    margin-top: 30px; 
+
+
+  
+    margin-top: 0; 
+}
+
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Layout de dos columnas (usado en Registro) */
+.form-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+/* Modifica el ancho máximo de la tarjeta para el layout de registro de 2 columnas */
+.auth-card[style*="max-width: 800px"] .form-fields {
+    padding-right: 30px;
+}
+
+/* Columna de Opción de Login dentro de Registro (Recuadro Azul) */
+.login-side-box {
+    flex-basis: 35%; 
+    background-color: #f0f8ff; /* Fondo blanco azulado discreto */
+    padding: 30px 15px; 
+    border: 2px solid #004d99; /* Borde azul oscuro para destacar */
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 50px; /* Separamos del borde superior de la tarjeta */
+}
+.login-side-box .btn {
+    display: block; 
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto 0; 
+    font-size: 1.1em;
+}
+
+/* --- ESTILOS DE FORMULARIO --- */
+
+/* Espaciado de cada grupo de campo (etiqueta + input) */
+.form-group { 
+    margin-bottom: 25px; 
+}
+
+.form-fields label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-size: 0.85em;
+}
+
+.form-fields input[type="text"],
+.form-fields input[type="password"],
+.form-fields input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+/* Estilos de errores */
+.errorlist {
+    color: #dc3545; 
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+/* Estilo para el error de credenciales (que está debajo de los campos) */
+.errorlist-bottom {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px; 
+    font-size: 1em;
+}
+
+
+/* --- ESTILOS DE BOTONES DE ACCIÓN (LOGIN/REGISTRO) --- */
+
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px; 
+    cursor: pointer;
+    text-decoration: none; 
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block; 
+}
+
+/* Contenedor de botones (Ingresar + Crear Cuenta) */
+.action-buttons {
+    display: flex;
+    justify-content: center; 
+    gap: 15px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+}
+
+/* Botones de Login/Ingresar (VERDE FUERTE) */
+.btn-login-main {
+    background-color: #28a745; 
+    color: white;
+    box-shadow: 0 6px 10px rgba(40, 167, 69, 0.3);
+}
+
+/* Botón Crear Cuenta (AZUL PRIMARIO) */
+.btn-create-account {
+    background-color: #007bff; 
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* Estilo para el enlace de "Volver a selección de perfil" (BOTÓN DISCRETO) */
+.link-return {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+.link-return a {
+    color: #004d99;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 15px;
+    border: 1px solid #004d99;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+.link-return a:hover {
+    background-color: #e3f2fd; 
+}
+
+/* Estilos de Home (Profesores/Estudiantes) */
+.btn-profesor {
+    background-color: #0056b3; 
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
+}
+.btn-estudiante {
+    background-color: #28a745; 
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
+}
+
+/* Efecto hover general */
+.btn:hover {
+    transform: translateY(-4px); 
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}

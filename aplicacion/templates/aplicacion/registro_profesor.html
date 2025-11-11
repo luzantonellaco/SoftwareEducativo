@@ -1,19 +1,104 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Registro Profesor</title>
+    <!-- Cargamos los estilos que están en aplicacion/static/aplicacion/style.css -->
+    <link rel="stylesheet" href="{% static 'aplicacion/style.css' %}">
 </head>
 <body>
-    <h1>Registro de Profesor</h1>
-    <form method="post">
-        {% csrf_token %} 
-        
-        {{ form.as_p }} 
-        
-        <button type="submit">Enviar</button>
-    </form>
     
-    <p>¿Ya tienes cuenta? <a href="{% url 'login_profesor' %}">Iniciar Sesión</a></p>
+    <!-- TÍTULO DE LA APLICACIÓN: FUERA de la tarjeta -->
+    <h1 class="title">AVENTURA TCP/IP: CARRERA DE CAPAS 🏁</h1>
+
+    <!-- Tarjeta principal que contiene AMBAS columnas -->
+    <div class="auth-card" style="max-width: 800px;"> 
+        
+        <!-- USAMOS form-layout PARA CREAR LAS DOS COLUMNAS -->
+        <div class="form-layout">
+            
+            <!-- Columna Izquierda: Formulario de Registro (el blanco principal) -->
+            <div class="form-fields" style="flex-basis: 60%; padding-right: 30px;"> 
+                
+                <!-- Título Específico de la Página - DENTRO DE LA COLUMNA IZQUIERDA -->
+                <h2 style="margin-top: 0; margin-bottom: 25px;">Registro de Profesor</h2>
+                
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Campo: Nombre y Apellido (Renderizado en línea) -->
+                    <div class="form-group" style="display: flex; gap: 15px;">
+                        <!-- Campo Nombre -->
+                        <div style="flex-grow: 1;">
+                            <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                            {{ form.first_name }}
+                        </div>
+                        <!-- Campo Apellido -->
+                        <div style="flex-grow: 1;">
+                            <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    
+                    <!-- Campo: Correo Institucional -->
+                    <div class="form-group">
+                        <label for="{{ form.correo_institucional.id_for_label }}">Correo Institucional</label>
+                        {{ form.correo_institucional }}
+                    </div>
+                    
+                    <!-- Campo: Contraseña -->
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                        {{ form.password }}
+                    </div>
+
+                    <!-- Campo: Confirmar Contraseña -->
+                    <div class="form-group">
+                        <label for="{{ form.password_confirm.id_for_label }}">Confirmar Contraseña</label>
+                        {{ form.password_confirm }}
+                    </div>
+                    
+                    <!-- 1. BLOQUE CENTRALIZADO DE TODOS LOS ERRORES (MOVIDO AQUÍ) -->
+                    <div class="error-summary">
+                        
+                        <!-- Errores NO de campo (Ej: Contraseñas no coinciden) -->
+                        {% for error in form.non_field_errors %}
+                            <p class="errorlist errorlist-bottom">{{ error }}</p>
+                        {% endfor %}
+
+                        <!-- Errores de campo (Ej: Correo ya existe) -->
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <!-- CAMBIO CLAVE: SOLO MOSTRAMOS EL MENSAJE DE ERROR, SIN LA ETIQUETA DEL CAMPO -->
+                                <p class="errorlist errorlist-bottom">{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Botón Enviar (ALINEADO AL CENTRO) -->
+                    <div class="action-buttons" style="justify-content: center; margin-top: 20px;">
+                        <button type="submit" class="btn" style="background-color: #0077B6; color: white;">Enviar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Columna Derecha: Opción de Login (Fondo destacado y borde) -->
+            <div class="form-extra-options login-side-box">
+                <h3>¿Ya estás registrado?</h3>
+                <p>Inicia sesión ahora para acceder a tus clases y desafíos.</p>
+                
+                <a href="{% url 'login_profesor' %}" class="btn" style="background-color: black; color: white; margin-top: 20px;">
+                    Iniciar Sesión
+                </a>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- ENLACE DE RETORNO ESTÉTICO -->
+    <p class="link-return">
+        <a href="{% url 'index' %}">Volver a selección de perfil</a>
+    </p>
 </body>
 </html>

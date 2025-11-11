@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect 
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm # Se necesita solo para procesar login_view
+from django.shortcuts import render, redirect  # type: ignore
+from django.contrib.auth import authenticate, login # type: ignore
+from django.contrib.auth.forms import AuthenticationForm # type: ignore # Se necesita solo para procesar login_view
 
 # ¡IMPORTAMOS TODOS LOS 4 FORMULARIOS QUE HEMOS CREADO!
 from .forms import (
@@ -18,7 +18,8 @@ def index_view(request):
 
 def login_profesor_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado
+        form = ProfesorLoginForm(request, data=request.POST) 
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -29,13 +30,15 @@ def login_profesor_view(request):
             else:
                 form.add_error(None, "Credenciales inválidas o no eres profesor.")
     else:
-        form = AuthenticationForm()
+        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado para GET
+        form = ProfesorLoginForm()
     
     return render(request, 'aplicacion/login_profesor.html', {'login_form': form})
 
 def login_estudiante_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado
+        form = EstudianteLoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -46,7 +49,8 @@ def login_estudiante_view(request):
             else:
                 form.add_error(None, "Credenciales inválidas o no eres estudiante.")
     else:
-        form = AuthenticationForm()
+        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado para GET
+        form = EstudianteLoginForm()
     
     return render(request, 'aplicacion/login_estudiante.html', {'login_form': form})
 
@@ -79,15 +83,7 @@ def login_view(request):
     else:
         form = AuthenticationForm()
 
-    # Si el login falla (POST) o es GET, volvemos a mostrar la plantilla de login.
-    # Necesitamos una plantilla 'login.html' genérica para esto.
-    # Si no la tienes, este render fallará, pero el flujo principal
-    # no debería llegar aquí si el login es exitoso.
-    # ---
-    # NOTA: Debes crear un 'login.html' o manejar el error en la misma
-    # plantilla 'login_estudiante.html' (lo cual es más avanzado).
-    # Por ahora, si falla, lo mandamos a una plantilla genérica.
-    #---
+
     return render(request, 'aplicacion/login_estudiante.html', {'login_form': form})
 
 
