@@ -81,6 +81,13 @@ def registro_estudiante_view(request):
         if form.is_valid():
             user = form.save() 
             login(request, user) 
+            # Asegurar que un usuario recién creado no tenga niveles desbloqueados
+            try:
+                # Eliminamos cualquier registro de NivelUnlock inesperado para este usuario
+                NivelUnlock.objects.filter(user=user).exclude(level=1).delete()
+            except Exception:
+                # No detener el flujo si hay un problema al limpiar la tabla
+                pass
             return redirect('perfil_estudiante') 
     else:
         form = EstudianteRegistroForm()

@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="{% static 'aplicacion/style.css' %}">
 </head>
 <body>
+    <script>
+        // Limpieza inmediata: eliminar cualquier flag antiguo de desbloqueo antes de procesar la UI
+        try { localStorage.removeItem('unlocked_level_2'); } catch(e) { /* ignore */ }
+    </script>
     
     <!-- TÍTULO DE LA APLICACIÓN: FUERA de la tarjeta -->
     <h1 class="title">AVENTURA TCP/IP: CARRERA DE CAPAS 🏁</h1>
@@ -109,24 +113,18 @@
     </div>
     
     <script>
-        // Comprobar si Nivel 2 fue desbloqueado en localStorage por el juego
+        // Sincronizar localStorage con el estado del servidor.
+        // Ya no permitimos que un valor antiguo en localStorage fuerce el desbloqueo.
         (function(){
             try {
-                const unlocked = localStorage.getItem('unlocked_level_2');
-                if (unlocked === 'true') {
-                    const card = document.getElementById('level-2-card');
-                    const btn = document.getElementById('level-2-button');
-                    if (card && btn) {
-                        card.classList.remove('locked');
-                        card.classList.add('unlocked');
-                        // cambiar texto y enlace al iniciar nivel 2 (ajusta la URL si implementas la vista)
-                        btn.textContent = 'INICIAR';
-                        btn.href = '/juego/capa2/';
-                    }
+                var serverUnlocked = {% if unlocked_level_2 %}true{% else %}false{% endif %};
+                if (serverUnlocked) {
+                    try { localStorage.setItem('unlocked_level_2', 'true'); } catch(e){}
+                } else {
+                    try { localStorage.removeItem('unlocked_level_2'); } catch(e){}
                 }
-            } catch(e) {
-                // si localStorage está bloqueado, no hacemos nada
-                console.warn('No se pudo leer localStorage para desbloqueo de niveles.');
+            } catch (e) {
+                console.warn('No se pudo sincronizar localStorage para desbloqueo de niveles.');
             }
         })();
     </script>
