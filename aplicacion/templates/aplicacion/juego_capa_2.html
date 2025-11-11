@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Nivel 2: Capa de Transporte</title>
+    <link rel="stylesheet" href="{% static 'aplicacion/style.css' %}">
+    <style>
+        .placeholder { max-width:800px; margin:40px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.08); text-align:center; }
+    </style>
+</head>
+<body>
+    <div class="placeholder">
+        <h1>Nivel 2 — Capa de Transporte</h1>
+        <p>Plantilla de marcador de posición. Aquí irá la actividad del Nivel 2.</p>
+        <p><a href="{% url 'perfil_estudiante' %}" class="btn-menu">Volver al Perfil</a></p>
+    </div>
+</body>
+</html>

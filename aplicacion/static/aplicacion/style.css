@@ -1,41 +1,52 @@
 /* aplicacion/static/aplicacion/style.css */
 
+/* --- CONFIGURACIÓN BASE Y ESTILOS GENERALES --- */
+
 /* Estilos generales */
 body {
     font-family: 'Arial', sans-serif;
-    /* Fondo con ligero degradado azul/verde en la parte superior (Mismo fondo que index) */
+    /* Fondo con ligero degradado azul/verde en la parte superior */
     background: linear-gradient(180deg, #e0f7fa 0%, #f7fcf7 20%, #f7fcf7 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
-    text-align: center;
-
-    /* ... código existente ... */
     min-height: 100vh;
     margin: 0;
-
-    padding-top: 50px; 
+    text-align: center;
+    padding-top: 20px; 
 }
+
 /* Estilo del título principal (AVENTURA TCP/IP) */
 .title {
-    color: #004d99;
+    color: #004d99; /* Azul oscuro */
     font-size: 2.5em;
     font-weight: 800;
-    /* CAMBIO CLAVE: Quitamos el margen negativo o lo reducimos */
-    margin-top: 0; 
-    /* Damos espacio entre el título y la tarjeta blanca */
-    margin-bottom: 30px; 
+    margin-bottom: 20px;
+    margin-top: 10px; 
 }
 
-/* Estilo del subtítulo (Usado en Home) */
-.subtitle {
-    font-size: 1.5em;
-    color: #333;
-    margin-bottom: 60px; 
-    font-weight: normal;
+/* Barra de navegación superior compacta */
+.top-nav {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 6px 20px 0 0;
 }
+.top-nav-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #004d99;
+    text-decoration: none;
+    border: 1px solid #004d99;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.top-nav-btn.secondary { background: #e6f2fb; }
 
 /* Contenedor de botones (Home) */
 .button-container {
@@ -43,49 +54,40 @@ body {
     gap: 40px; 
 }
 
-/* --- ESTILOS DE TARJETA (LOGIN/REGISTRO) --- */
+/* --- ESTILOS DE TARJETA (LOGIN/REGISTRO/PERFIL) --- */
 
-.auth-card {
+.auth-card, .profile-container {
     background-color: white;
     padding: 40px 50px;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 450px; /* Base para Login de una columna */
+    max-width: 450px; 
     text-align: left;
     margin-top: 30px; 
-
-
-  
-    margin-top: 0; 
 }
-
-
-.auth-header {
-    text-align: center;
+.profile-container {
+    max-width: 900px; /* Más ancho para el perfil de estudiante y menú de niveles */
+    margin-top: 30px; /* dejar espacio bajo el título para que no quede estático arriba */
     margin-bottom: 30px;
 }
 
-/* Layout de dos columnas (usado en Registro) */
+/* Contenedor para layout de formulario en dos columnas (registro) */
 .form-layout {
     display: flex;
-    justify-content: space-between;
+    gap: 24px;
     align-items: flex-start;
-}
-/* Modifica el ancho máximo de la tarjeta para el layout de registro de 2 columnas */
-.auth-card[style*="max-width: 800px"] .form-fields {
-    padding-right: 30px;
 }
 
 /* Columna de Opción de Login dentro de Registro (Recuadro Azul) */
 .login-side-box {
     flex-basis: 35%; 
-    background-color: #f0f8ff; /* Fondo blanco azulado discreto */
+    background-color: #F0F8FF; 
     padding: 30px 15px; 
-    border: 2px solid #004d99; /* Borde azul oscuro para destacar */
+    border: 2px solid #B0D7F5; 
     border-radius: 12px;
     text-align: center;
-    margin-top: 50px; /* Separamos del borde superior de la tarjeta */
+    margin-top: 50px; 
 }
 .login-side-box .btn {
     display: block; 
@@ -93,30 +95,47 @@ body {
     max-width: 200px;
     margin: 20px auto 0; 
     font-size: 1.1em;
+    background-color: black !important; 
+    color: white;
 }
 
-/* --- ESTILOS DE FORMULARIO --- */
+/* --- ESTILOS DE FORMULARIO/CAMPOS/ERRORES --- */
 
-/* Espaciado de cada grupo de campo (etiqueta + input) */
 .form-group { 
     margin-bottom: 25px; 
 }
-
 .form-fields label {
     display: block;
     font-weight: bold;
-    color: #555;
+    color: #0077B6;
     margin-bottom: 5px;
     text-transform: uppercase;
     font-size: 0.85em;
 }
 
+/* Etiquetas y campos de la fila "Nombre / Apellido" deben mostrarse en negro */
+.name-row label {
+    color: #000 !important;
+}
+.name-row input {
+    color: #000; /* texto tecleado en los inputs será negro */
+}
+.dark-label { color: #000 !important; }
+/* Filas que deben mostrar labels e inputs en negro (correo, alias, contraseñas) */
+.dark-row label {
+    color: #000 !important;
+}
+.dark-row input,
+.dark-row textarea {
+    color: #000; /* texto tecleado en estos campos será negro */
+}
 .form-fields input[type="text"],
 .form-fields input[type="password"],
-.form-fields input[type="email"] {
+.form-fields input[type="email"],
+textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #B0D7F5;
     border-radius: 8px;
     box-sizing: border-box;
     font-size: 1em;
@@ -130,16 +149,36 @@ body {
     margin-bottom: 10px;
     font-weight: bold;
 }
-/* Estilo para el error de credenciales (que está debajo de los campos) */
 .errorlist-bottom {
     text-align: center;
-    margin-top: 15px;
-    margin-bottom: 15px; 
+    margin-top: 5px !important; 
+    margin-bottom: 5px !important; 
     font-size: 1em;
 }
 
+/* --- ESTILOS DE PERFIL Y ALIAS (INSIGNIA) --- */
 
-/* --- ESTILOS DE BOTONES DE ACCIÓN (LOGIN/REGISTRO) --- */
+.profile-meta {
+    text-align: right; 
+    font-size: 1.2em; 
+    color: #0077B6; 
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: none; 
+    width: 100%;
+}
+.profile-meta strong {
+    color: white; 
+    background-color: #28A745; /* VERDE DE LA INSIGNIA */
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-left: 15px;
+    font-size: 0.9em;
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.4);
+}
+
+/* --- ESTILOS DE BOTONES (GENERAL Y NAVEGACIÓN) --- */
 
 .btn {
     padding: 15px 30px;
@@ -152,63 +191,75 @@ body {
     transition: transform 0.2s, box-shadow 0.2s;
     display: inline-block; 
 }
-
-/* Contenedor de botones (Ingresar + Crear Cuenta) */
-.action-buttons {
-    display: flex;
-    justify-content: center; 
-    gap: 15px; 
-    margin-top: 20px; 
-    margin-bottom: 20px; 
-}
-
-/* Botones de Login/Ingresar (VERDE FUERTE) */
-.btn-login-main {
-    background-color: #28a745; 
-    color: white;
-    box-shadow: 0 6px 10px rgba(40, 167, 69, 0.3);
-}
-
-/* Botón Crear Cuenta (AZUL PRIMARIO) */
-.btn-create-account {
-    background-color: #007bff; 
-    color: white;
-    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.3);
-}
-
-/* Estilo para el enlace de "Volver a selección de perfil" (BOTÓN DISCRETO) */
-.link-return {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 0.9em;
-}
-.link-return a {
-    color: #004d99;
-    text-decoration: none;
-    font-weight: bold;
-    padding: 8px 15px;
-    border: 1px solid #004d99;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-}
-.link-return a:hover {
-    background-color: #e3f2fd; 
-}
-
-/* Estilos de Home (Profesores/Estudiantes) */
-.btn-profesor {
-    background-color: #0056b3; 
-    color: white;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
-}
-.btn-estudiante {
-    background-color: #28a745; 
-    color: white;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
-}
-
-/* Efecto hover general */
 .btn:hover {
-    transform: translateY(-4px); 
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
+/* Botones de Navegación del Juego */
+.nav-controls button {
+    padding: 12px 25px; 
+    border-radius: 25px; 
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+}
+#prev-btn { background-color: #f7f7f7; color: #555; border: 1px solid #ddd; }
+#next-btn { background-color: #0077B6; color: white; }
+#check-btn { background-color: #4CAF50; color: white; } /* VERDE para Verificar */
+#finish-btn { background-color: #FF9800; color: white; } /* NARANJA para Finalizar */
+
+.nav-controls button:disabled {
+    background-color: #ccc !important;
+    color: #888 !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Botones de Rol (Home) */
+.btn-profesor { background-color: #0056b3; color: white; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); }
+.btn-estudiante { background-color: #28a745; color: white; box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); }
+.btn-login-main { background-color: #28a745; color: white; box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4); }
+.btn-create-account { background-color: #0077B6; color: white; box-shadow: 0 4px 8px rgba(0, 119, 182, 0.4); }
+
+
+/* --- ESTILOS ESPECÍFICOS DEL MENÚ DE JUEGO (PERFIL ESTUDIANTE) --- */
+
+.game-levels { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px 0; }
+.level-card {
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 180px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.unlocked .level-button { background-color: #4CAF50; color: white; }
+.locked { background-color: #eee; opacity: 0.6; cursor: not-allowed; }
+.locked .level-button { background-color: #9E9E9E; color: white; cursor: not-allowed; }
+.level-button { display: block; width: 100%; padding: 10px; border-radius: 6px; font-weight: bold; text-decoration: none; }
+
+
+/* --- ESTILOS DE RETROALIMENTACIÓN DETALLADA --- */
+#review-container {
+    margin-top: 30px;
+    border-top: 2px dashed #0077B6;
+    padding-top: 20px;
+}
+.review-item {
+    text-align: left;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-left: 5px solid;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+}
+.review-item.correct-review { border-color: #4CAF50; background-color: #e6ffe6; }
+.review-item.incorrect-review { border-color: #dc3545; background-color: #ffe6e6; }
+.correct-answer { color: #4CAF50; font-weight: bold; margin-top: 5px; }
+.explanation-text { font-size: 0.9em; color: #0077B6; margin-top: 5px; }

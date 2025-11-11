@@ -17,4 +17,7 @@ urlpatterns = [
     # 4. Perfiles
     path('perfil/profesor/', views.perfil_profesor_view, name='perfil_profesor'),
     path('perfil/estudiante/', views.perfil_estudiante_view, name='perfil_estudiante'),
+    path('juego/capa1/', views.juego_capa_1_view, name='juego_capa_1'),
+    path('juego/capa2/', views.juego_capa_2_view, name='juego_capa_2'),
+    path('juego/save_result/', views.save_quiz_result, name='save_quiz_result'),
 ]

@@ -28,40 +28,40 @@
                     {% csrf_token %}
 
                     <!-- Campo: Nombre y Apellido (Renderizado en línea) -->
-                    <div class="form-group" style="display: flex; gap: 15px;">
+                    <div class="form-group name-row" style="display: flex; gap: 15px;">
                         <!-- Campo Nombre -->
                         <div style="flex-grow: 1;">
-                            <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                            <label class="dark-label" for="{{ form.first_name.id_for_label }}">Nombre</label>
                             {{ form.first_name }}
                         </div>
                         <!-- Campo Apellido -->
                         <div style="flex-grow: 1;">
-                            <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                            <label class="dark-label" for="{{ form.last_name.id_for_label }}">Apellido</label>
                             {{ form.last_name }}
                         </div>
                     </div>
                     
                     <!-- CAMPO ESPECÍFICO DEL ESTUDIANTE: Correo Electrónico (Username) -->
-                    <div class="form-group">
-                        <label for="{{ form.username.id_for_label }}">Correo Electrónico</label>
+                    <div class="form-group dark-row">
+                        <label class="dark-label" for="{{ form.username.id_for_label }}">Correo Electrónico</label>
                         {{ form.username }}
                     </div>
 
                     <!-- CAMPO ESPECÍFICO DEL ESTUDIANTE: Alias/Nickname -->
-                    <div class="form-group">
-                        <label for="{{ form.alias.id_for_label }}">Alias / Nickname</label>
+                    <div class="form-group dark-row">
+                        <label class="dark-label" for="{{ form.alias.id_for_label }}">Alias / Nickname</label>
                         {{ form.alias }}
                     </div>
                     
                     <!-- Campo: Contraseña -->
-                    <div class="form-group">
-                        <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                    <div class="form-group dark-row">
+                        <label class="dark-label" for="{{ form.password.id_for_label }}">Contraseña</label>
                         {{ form.password }}
                     </div>
 
                     <!-- Campo: Confirmar Contraseña -->
-                    <div class="form-group">
-                        <label for="{{ form.password_confirm.id_for_label }}">Confirmar Contraseña</label>
+                    <div class="form-group dark-row">
+                        <label class="dark-label" for="{{ form.password_confirm.id_for_label }}">Confirmar Contraseña</label>
                         {{ form.password_confirm }}
                     </div>
                     

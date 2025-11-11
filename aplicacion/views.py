@@ -1,16 +1,24 @@
-from django.shortcuts import render, redirect  # type: ignore
-from django.contrib.auth import authenticate, login # type: ignore
-from django.contrib.auth.forms import AuthenticationForm # type: ignore # Se necesita solo para procesar login_view
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
+import json
+from django.utils import timezone
+from django.db import DatabaseError
 
-# ¡IMPORTAMOS TODOS LOS 4 FORMULARIOS QUE HEMOS CREADO!
+# Importar los modelos nuevos
+from .models import QuizAttempt, NivelUnlock
+# NO NECESITAMOS AuthenticationForm aquí
+
+# ¡IMPORTAMOS LOS FORMULARIOS!
 from .forms import (
     EstudianteRegistroForm, 
     ProfesorRegistroForm,
-    EstudianteLoginForm,  # <-- ESTE CAMBIO IMPORTA EL LOGIN DE ESTUDIANTE
-    ProfesorLoginForm     # <-- ESTE CAMBIO IMPORTA EL LOGIN DE PROFESOR
+    EstudianteLoginForm,  
+    ProfesorLoginForm     
 ) 
 
-# --- VISTAS DE NAVEGACIÓN (LAS QUE YA TENÍAS) ---
+# --- VISTAS DE NAVEGACIÓN ---
 
 def index_view(request):
     """Muestra la página de bienvenida (index.html)."""
@@ -18,7 +26,6 @@ def index_view(request):
 
 def login_profesor_view(request):
     if request.method == 'POST':
-        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado
         form = ProfesorLoginForm(request, data=request.POST) 
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -30,14 +37,12 @@ def login_profesor_view(request):
             else:
                 form.add_error(None, "Credenciales inválidas o no eres profesor.")
     else:
-        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado para GET
         form = ProfesorLoginForm()
     
     return render(request, 'aplicacion/login_profesor.html', {'login_form': form})
 
 def login_estudiante_view(request):
     if request.method == 'POST':
-        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado
         form = EstudianteLoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -49,52 +54,20 @@ def login_estudiante_view(request):
             else:
                 form.add_error(None, "Credenciales inválidas o no eres estudiante.")
     else:
-        # CAMBIO CLAVE AQUÍ: Usar tu formulario personalizado para GET
         form = EstudianteLoginForm()
     
     return render(request, 'aplicacion/login_estudiante.html', {'login_form': form})
 
-# --- VISTAS DE PROCESAMIENTO (LAS QUE FALTABAN) ---
-
-def login_view(request):
-    """
-    Procesa el formulario de LOGIN (de profesor o estudiante)
-    y redirige según el ROL.
-    """
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST) 
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            
-            if user is not None:
-                login(request, user)
-                
-                # Redirección basada en el ROL
-                if user.rol == 'PROFESOR':
-                    # Fallará hasta que creemos esta URL
-                    return redirect('perfil_profesor') 
-                elif user.rol == 'ESTUDIANTE':
-                    # Fallará hasta que creemos esta URL
-                    return redirect('perfil_estudiante') 
-            else:
-                form.add_error(None, "Nombre de usuario o contraseña incorrectos.")
-    else:
-        form = AuthenticationForm()
-
-
-    return render(request, 'aplicacion/login_estudiante.html', {'login_form': form})
-
+# (Eliminamos login_view redundante)
 
 def registro_profesor_view(request):
     """Muestra y procesa el formulario de REGISTRO de Profesor."""
     if request.method == 'POST':
         form = ProfesorRegistroForm(request.POST)
         if form.is_valid():
-            user = form.save() # El form.save() (de forms.py) se encarga de todo
-            login(request, user) # Iniciar sesión automáticamente
-            return redirect('perfil_profesor') # Redirigir al perfil
+            user = form.save() 
+            login(request, user) 
+            return redirect('perfil_profesor') 
     else:
         form = ProfesorRegistroForm()
         
@@ -106,9 +79,9 @@ def registro_estudiante_view(request):
     if request.method == 'POST':
         form = EstudianteRegistroForm(request.POST)
         if form.is_valid():
-            user = form.save() # El form.save() (de forms.py) se encarga de todo
-            login(request, user) # Iniciar sesión automáticamente
-            return redirect('perfil_estudiante') # Redirigir al perfil
+            user = form.save() 
+            login(request, user) 
+            return redirect('perfil_estudiante') 
     else:
         form = EstudianteRegistroForm()
         
@@ -119,4 +92,66 @@ def perfil_profesor_view(request):
 
 
 def perfil_estudiante_view(request):
-    return render(request, 'aplicacion/perfil_estudiante.html')
+    """Muestra el menú de niveles para el estudiante."""
+    # Comprobar en la base de datos si el usuario ya desbloqueó el nivel 2
+    unlocked_level_2 = False
+    if request.user.is_authenticated:
+        try:
+            unlocked_level_2 = NivelUnlock.objects.filter(user=request.user, level=2).exists()
+        except (DatabaseError, Exception) as e:
+            # Si la tabla todavía no existe (migrations no aplicadas) o hay otro error de DB,
+            # no rompemos la vista: devolvemos unlocked_level_2 = False como fallback.
+            # Esto evita que la interfaz rompa al hacer clic en "Volver al Menú" antes de aplicar migrations.
+            unlocked_level_2 = False
+            # Opcional: podríamos loguear el error en un logger si se desea.
+
+    return render(request, 'aplicacion/perfil_estudiante.html', {'unlocked_level_2': unlocked_level_2})
+
+
+@login_required
+def save_quiz_result(request):
+    """Endpoint que recibe JSON con las respuestas/puntuación y lo guarda en la BD.
+
+    Espera JSON: { score: int, level: int (opcional), answers: [...] }
+    Si score > 8 entonces crea/asegura un NivelUnlock para level=2.
+    Devuelve JSON { ok: true }
+    """
+    if request.method != 'POST':
+        return HttpResponseBadRequest('POST required')
+
+    try:
+        payload = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return HttpResponseBadRequest('Invalid JSON')
+
+    score = int(payload.get('score', 0))
+    level = int(payload.get('level', 1))
+    answers = payload.get('answers', {})
+
+    # Guardar intento de quiz
+    attempt = QuizAttempt.objects.create(
+        user=request.user,
+        level=level,
+        score=score,
+        answers=answers,
+    )
+
+    # Si aplica, desbloquear Nivel 2
+    try:
+        if score > 8:
+            NivelUnlock.objects.get_or_create(user=request.user, level=2)
+    except Exception:
+        # no bloquear el flujo si algo falla secundario
+        pass
+
+    return JsonResponse({'ok': True, 'attempt_id': attempt.id})
+
+# --- VISTA DEL JUEGO (NUEVA VISTA) ---
+def juego_capa_1_view(request):
+    """Renderiza la actividad de arrastrar y soltar para el Nivel 1 (Capa de Aplicación)."""
+    return render(request, 'aplicacion/juego_capa_1.html')
+
+
+def juego_capa_2_view(request):
+    """Plantilla placeholder para Nivel 2."""
+    return render(request, 'aplicacion/juego_capa_2.html')

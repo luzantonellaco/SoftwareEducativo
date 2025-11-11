@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.utils import timezone
 
 # Definimos los roles
 ROL_CHOICES = (
@@ -51,3 +53,29 @@ class Usuario(AbstractUser):
         if self.is_superuser:
             self.rol = 'ADMIN'
         super().save(*args, **kwargs)
+
+
+class NivelUnlock(models.Model):
+    """Registra niveles desbloqueados por usuario para persistencia."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='unlocked_levels')
+    level = models.PositiveIntegerField()
+    unlocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'level')
+        ordering = ['-unlocked_at']
+
+    def __str__(self):
+        return f"{self.user.username} - Nivel {self.level}"
+
+
+class QuizAttempt(models.Model):
+    """Guarda intentos de quizzes con las respuestas para auditoría o revisión."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_attempts')
+    level = models.PositiveIntegerField(default=1)
+    score = models.IntegerField()
+    answers = models.JSONField(default=dict)  # estructura: [{id:..., type:..., answer:...}, ...]
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - Nivel {self.level} - {self.score} pts - {self.created_at.isoformat()}"

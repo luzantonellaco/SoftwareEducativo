@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # CONECTAR LA APP JUEGOS A LA RUTA PRINCIPAL (/)
-    path('', include('aplicacion.urls')), # <-- AÑADIR ESTA LÍNEA
+    path('', include('aplicacion.urls')), 
+    
 ]
