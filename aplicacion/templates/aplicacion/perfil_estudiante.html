@@ -117,7 +117,7 @@
         // Ya no permitimos que un valor antiguo en localStorage fuerce el desbloqueo.
         (function(){
             try {
-                var serverUnlocked = {% if unlocked_level_2 %}true{% else %}false{% endif %};
+                var serverUnlocked = "{{ unlocked_level_2|yesno:'true,false' }}" === "true";
                 if (serverUnlocked) {
                     try { localStorage.setItem('unlocked_level_2', 'true'); } catch(e){}
                 } else {
